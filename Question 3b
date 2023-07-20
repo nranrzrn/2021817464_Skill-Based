@@ -1,6 +1,6 @@
 import socket
 
-SERVER_IP = "192.168.238.128"
+SERVER_IP = '192.168.238.128'
 PORT = 8443
 
 def main():
@@ -20,3 +20,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
