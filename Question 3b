@@ -1,23 +1,22 @@
 import socket
 
-SERVER_IP = '192.168.238.128'
-PORT = 8443
-
 def main():
+    server_host = "192.168.238.128"
+    server_port = 8443
+
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((SERVER_IP, PORT))
+    client_socket.connect((server_host, server_port))
 
-    pressure = float(input("Enter pressure in bar: "))
+    try:
+        pressure = float(input("Enter the pressure value in bar: "))
+        client_socket.send(str(pressure).encode())
 
-    client_socket.send(str(pressure).encode())
-
-    atmosphere_pressure_data = client_socket.recv(1024)
-    atmosphere_pressure = float(atmosphere_pressure_data.decode())
-
-    print(f"Converted pressure: {atmosphere_pressure:.2f} atm")
-
-    client_socket.close()
+        atmosphere_value = client_socket.recv(1024).decode()
+        print("Received atmosphere-standard value from server: {}".format(atmosphere_value))
+    except ValueError:
+        print("Invalid input. Please enter a valid pressure value in bar.")
+    finally:
+        client_socket.close()
 
 if __name__ == "__main__":
     main()
-
