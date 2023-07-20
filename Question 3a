@@ -1,30 +1,30 @@
 import socket
 
-PORT = 8443
-ATMOSPHERE_CONVERSION = 0.986923
-
-def handle_client(client_socket):
-    pressure_data = client_socket.recv(1024)
-    pressure = float(pressure_data.decode())
-
-    atmosphere_pressure = pressure * ATMOSPHERE_CONVERSION
-
-    client_socket.send(str(atmosphere_pressure).encode())
-
-    client_socket.close()
+def convert_to_atmosphere(pressure):
+    return pressure * 0.986923
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', PORT))
-    server_socket.listen(5)
+    server_host = "192.168.238.128"
+    server_port = 8443
 
-    print("TCP Server is running. Waiting for connections.")
+    server_socket.bind((server_host, server_port))
+    server_socket.listen(1)
+
+    print("Server listening on {}:{}".format(server_host, server_port))
 
     while True:
-        client_socket, client_address = server_socket.accept()
-        print(f"Client connected from {client_address}")
+        client_socket, client_addr = server_socket.accept()
+        print("Connection established with {}:{}".format(*client_addr))
 
-        handle_client(client_socket)
+        try:
+            pressure = float(client_socket.recv(1024).decode().strip())
+            atmosphere_value = convert_to_atmosphere(pressure)
+            client_socket.send(str(atmosphere_value).encode())
+        except ValueError:
+            client_socket.send(b"Invalid input. Please enter a valid pressure value in bar.")
+
+        client_socket.close()
 
 if __name__ == "__main__":
     main()
