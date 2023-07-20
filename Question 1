@@ -11,7 +11,7 @@ try:
 
     client_socket.send(user_input.encode('utf-8'))
     reply = client_socket.recv(1024).decode('utf-8')
-      print("The reply from server is: ", reply)
+    print("The reply from server is:", reply)
 
 except ConnectionRefusedError:
     print("Connection failed. Make sure the server is running and reachable.")
